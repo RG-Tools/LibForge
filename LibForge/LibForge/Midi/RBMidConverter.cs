@@ -231,10 +231,10 @@ namespace LibForge.Midi
           "BEAT",
           "MARKUP",
         };
-        foreach(var trackname in trackNames)
+        foreach (var trackname in trackNames)
         {
           var track = processedTracks.Where(x => x.Name == trackname).FirstOrDefault();
-          if(track != null && trackHandlers.ContainsKey(track.Name))
+          if (track != null && trackHandlers.ContainsKey(track.Name))
           {
             trackHandlers[track.Name](track);
           }
@@ -274,7 +274,7 @@ namespace LibForge.Midi
         return rb;
       }
       private Dictionary<string, Action<MidiTrackProcessed>> trackHandlers;
-      
+
       private float GetMillis(uint tick)
       {
         var tempo = mf.TempoTimeSigMap.Last(e => e.Tick <= tick);
@@ -316,7 +316,8 @@ namespace LibForge.Midi
 
         tom_markers[0] = new RBMid.TOMMARKER.MARKER
         {
-          Tick = 0, Flags = 0
+          Tick = 0,
+          Flags = 0
         };
         var marker_ends = new uint[3];
         var mixes = new List<RBMid.TICKTEXT>[4];
@@ -333,7 +334,7 @@ namespace LibForge.Midi
           else
           {
             var active_flag = 4;
-            foreach(var end in marker_ends)
+            foreach (var end in marker_ends)
             {
               if (end > tick)
               {
@@ -348,10 +349,10 @@ namespace LibForge.Midi
             };
           }
           // HACK for superunknownrb4 which has a badly quantized PRO marker
-          for(var diff = 2; diff < 4; diff++)
+          for (var diff = 2; diff < 4; diff++)
           {
             var count = gem_tracks[diff]?.Count ?? 0;
-            if (count > 0 
+            if (count > 0
               && tick - gem_tracks[diff][count - 1].StartTicks < 5
               && (gem_tracks[diff][count - 1].Lanes & (int)flag) != 0)
             {
@@ -506,7 +507,7 @@ namespace LibForge.Midi
                 SetMarkerOn(e.StartTicks, flag);
                 SetMarkerOff(e.StartTicks + e.LengthTicks, flag);
                 marker_ends[e.Key - ProYellow] = e.StartTicks + e.LengthTicks;
-                foreach(var x in tom_markers.Values.Where(k => k.Tick >= e.StartTicks && k.Tick < e.StartTicks + e.LengthTicks))
+                foreach (var x in tom_markers.Values.Where(k => k.Tick >= e.StartTicks && k.Tick < e.StartTicks + e.LengthTicks))
                 {
                   x.Flags |= flag;
                 }
@@ -637,7 +638,8 @@ namespace LibForge.Midi
       const byte TremoloMarker = 126;
       const byte LeftHandEnd = 59;
       const byte LeftHandStart = 40;
-      struct Hopo {
+      struct Hopo
+      {
         public uint EndTick;
         public enum State { NormalOff, NormalOn, ForcedOn, ForcedOff }
         public State state;
@@ -703,7 +705,7 @@ namespace LibForge.Midi
           {
             return false;
           }
-          if(diff == 3 && tremolos.Count > 0 && tremolos[tremolos.Count - 1].EndTick > e.StartTicks)
+          if (diff == 3 && tremolos.Count > 0 && tremolos[tremolos.Count - 1].EndTick > e.StartTicks)
           {
             var tmp = tremolos[tremolos.Count - 1];
             tmp.Lanes |= 1 << lane;
@@ -731,11 +733,11 @@ namespace LibForge.Midi
           { // new chord
 
             bool hopo = false;
-            if(chords[diff] != null)
+            if (chords[diff] != null)
             {
-              if(e.StartTicks - chords[diff].StartTicks <= hopoThreshold && ((1 << lane) & chords[diff].Lanes) == 0)
+              if (e.StartTicks - chords[diff].StartTicks <= hopoThreshold && ((1 << lane) & chords[diff].Lanes) == 0)
               {
-                if(hopoState[diff].state != Hopo.State.ForcedOff || hopoState[diff].EndTick <= e.StartTicks)
+                if (hopoState[diff].state != Hopo.State.ForcedOff || hopoState[diff].EndTick <= e.StartTicks)
                   hopo = true;
               }
             }
@@ -788,7 +790,7 @@ namespace LibForge.Midi
               return false;
           }
           hopoState[diff].EndTick = e.StartTicks + e.LengthTicks;
-          if(chords[diff] != null && chords[diff].StartTicks == e.StartTicks)
+          if (chords[diff] != null && chords[diff].StartTicks == e.StartTicks)
           {
             chords[diff].IsHopo = force;
           }
@@ -846,7 +848,7 @@ namespace LibForge.Midi
                   Lanes = 0
                 });
               }
-              else if(e.Key >= LeftHandStart && e.Key <= LeftHandEnd)
+              else if (e.Key >= LeftHandStart && e.Key <= LeftHandEnd)
               {
                 left_hand.Add(new RBMid.HANDPOS
                 {
@@ -889,7 +891,7 @@ namespace LibForge.Midi
               }
               regex = new System.Text.RegularExpressions.Regex("\\[map (StrumMap_[A-Za-z]+)\\]");
               match = regex.Match(e.Text);
-              if(match.Success && StrumMaps.ContainsKey(match.Groups[1].Value))
+              if (match.Success && StrumMaps.ContainsKey(match.Groups[1].Value))
               {
                 var mapType = StrumMaps[match.Groups[1].Value];
                 strummaps.Add(new RBMid.MAP
@@ -983,7 +985,7 @@ namespace LibForge.Midi
 
       private void HandleRealKeysXTrk(MidiTrackProcessed track)
       {
-        foreach(var item in track.Items)
+        foreach (var item in track.Items)
         {
           switch (item)
           {
@@ -1044,12 +1046,12 @@ namespace LibForge.Midi
       private void HandleKeysAnimTrk(MidiTrackProcessed track)
       {
         var anims = new List<RBMid.ANIM.EVENT>();
-        foreach(var item in track.Items)
+        foreach (var item in track.Items)
         {
           switch (item)
           {
             case MidiNote e:
-              if(e.Key >= 48 && e.Key <= 72)
+              if (e.Key >= 48 && e.Key <= 72)
               {
                 anims.Add(new RBMid.ANIM.EVENT
                 {
@@ -1103,7 +1105,8 @@ namespace LibForge.Midi
         RBMid.VOCALTRACK.PHRASE_MARKER authored_phrase = null;
 
         int harm;
-        switch (track.Name) {
+        switch (track.Name)
+        {
           case "HARM1": harm = 1; break;
           case "HARM2": harm = 2; break;
           case "HARM3": harm = 3; break;
@@ -1116,7 +1119,7 @@ namespace LibForge.Midi
         if (copyPreviousPhrases)
         {
           last_track_markers = VocalTracks.Last().FakePhraseMarkers;
-          foreach(var marker in last_track_markers)
+          foreach (var marker in last_track_markers)
           {
             gen_phrases.Add(new RBMid.VOCALTRACK.PHRASE_MARKER
             {
@@ -1170,7 +1173,7 @@ namespace LibForge.Midi
           {
             // Get the phrase that contains this note
             var phrase = gen_phrases.First(x => x.StartTicks + x.LengthTicks > e.StartTicks);
-            if(phrase != gen_phrase)
+            if (phrase != gen_phrase)
             {
               gen_phrase = phrase;
               if (gen_phrase.StartNoteIdx == 0)
@@ -1341,7 +1344,7 @@ namespace LibForge.Midi
           if (e.Key != Percussion && e.Key != AutoPercussion)
             return false;
           gen_phrase.PercussionSection = true;
-          if(e.Key == Percussion)
+          if (e.Key == Percussion)
             percussions.Add(e.StartTicks);
           return true;
         }
@@ -1376,7 +1379,7 @@ namespace LibForge.Midi
         notes[notes.Count - 1] = lastNote;
 
         // fix for cases like deadblack
-        if(pitched)
+        if (pitched)
           foreach (var phrase in gen_phrases)
           {
             phrase.LowNote = theVocalRange.LowNote;
@@ -1442,8 +1445,8 @@ namespace LibForge.Midi
             overdriveSections, overdriveSections, overdriveSections, overdriveSections
           }
         });
-        // hack: copy data from HARM2 into HARM3
-        if(copyPreviousPhrases && harm == 3)
+        /* hack: copy data from HARM2 into HARM3
+        if (copyPreviousPhrases && harm == 3)
         {
           VocalTracks.Add(new RBMid.VOCALTRACK
           {
@@ -1454,7 +1457,7 @@ namespace LibForge.Midi
             FreestyleRegions = VocalTracks.Last().FreestyleRegions
           });
         }
-        else
+        else */
         {
           VocalTracks.Add(new RBMid.VOCALTRACK
           {
@@ -1472,7 +1475,7 @@ namespace LibForge.Midi
 
       private void HandleEventsTrk(MidiTrackProcessed track)
       {
-        foreach(var item in track.Items)
+        foreach (var item in track.Items)
         {
           var timeMillis = (float)(item.StartTime * 1000);
           switch (item)
@@ -1516,21 +1519,21 @@ namespace LibForge.Midi
         LastMarkupTick = track.LastTick;
         RBMid.MARKUPCHORD last_chord = null;
         var pitches = new SortedSet<int>();
-        foreach(var item in track.Items)
+        foreach (var item in track.Items)
         {
           switch (item)
           {
             case MidiNote e:
-              if(e.Key >= MarkupChordsStart && e.Key <= MarkupChordsEnd)
+              if (e.Key >= MarkupChordsStart && e.Key <= MarkupChordsEnd)
               {
-                if(last_chord?.StartTick == e.StartTicks)
+                if (last_chord?.StartTick == e.StartTicks)
                 {
                   pitches.Add(e.Key % 12);
                   last_chord.Pitches = pitches.ToArray();
                 }
                 else
                 {
-                  if(last_chord != null)
+                  if (last_chord != null)
                   {
                     last_chord.EndTick = e.StartTicks;
                   }
@@ -1545,7 +1548,7 @@ namespace LibForge.Midi
                   pitches.Add(e.Key % 12);
                 }
               }
-              else if(e.Key >= MarkupNotes1Start && e.Key <= MarkupNotes1End)
+              else if (e.Key >= MarkupNotes1Start && e.Key <= MarkupNotes1End)
               {
                 MarkupSoloNotes1.Add(new RBMid.MARKUP_SOLO_NOTES
                 {
@@ -1554,7 +1557,7 @@ namespace LibForge.Midi
                   NoteOffset = e.Key - MarkupNotes1Start
                 });
               }
-              else if(e.Key >= MarkupNotes3Start && e.Key <= MarkupNotes3End)
+              else if (e.Key >= MarkupNotes3Start && e.Key <= MarkupNotes3End)
               {
                 MarkupSoloNotes3.Add(new RBMid.MARKUP_SOLO_NOTES
                 {
@@ -1563,7 +1566,7 @@ namespace LibForge.Midi
                   NoteOffset = e.Key - MarkupNotes3Start
                 });
               }
-              else if(e.Key == MarkupNotes2)
+              else if (e.Key == MarkupNotes2)
               {
                 MarkupSoloNotes2.Add(new RBMid.MARKUP_SOLO_NOTES
                 {
@@ -1578,7 +1581,7 @@ namespace LibForge.Midi
               var match = regex.Match(e.Text);
               if (match.Success)
               {
-                var loop_measures =int.Parse(match.Groups[1].Value);
+                var loop_measures = int.Parse(match.Groups[1].Value);
                 var loop_end = MeasureTicks[loop_measures - 1];
                 SoloLoops1.Add(new RBMid.TWOTICKS
                 {
@@ -1622,8 +1625,8 @@ namespace LibForge.Midi
         {
           return tracks;
         }
-        if(!venueTrack.Messages.Any(m => m is TextEvent t 
-            && (t.Text.Contains(".pp]") || t.Text.Contains("[coop") || t.Text.Contains("[directed"))))
+        if (!venueTrack.Messages.Any(m => m is TextEvent t
+             && (t.Text.Contains(".pp]") || t.Text.Contains("[coop") || t.Text.Contains("[directed"))))
         {
           // If this is already a RBN1 VENUE, skip it.
           return tracks;

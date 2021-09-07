@@ -1,12 +1,19 @@
 # About This Repository
 
+This repo is dedicated to carrying out the work Maxton started on Rock Band 4 customs, and ensuring that access to Rock Band 4 customs are always available. We will also be monitoring for any possible improvements to work he started. 
+
+Everything below (unless noted otherwise) is the original description written by Maxton. 
+
+=================================================================================================================
+
+
 I am keeping track of my research into RB4 customs here.
 
 I am working out the structure of the files in Rock Band 4. These are being documented in the form of 010 Editor Template files, which are in the `010` directory.
 
 # Latest Build
 
-Can be downloaded at [Appveyor](https://ci.appveyor.com/project/maxton/libforge/branch/master/artifacts)
+Can be downloaded at [Appveyor](https://ci.appveyor.com/project/RG-Tools/libforge) (Note: AppVeyor link changed to match this repo)
 
 # LibForge
 
